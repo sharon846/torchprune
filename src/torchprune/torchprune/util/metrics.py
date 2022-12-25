@@ -4,9 +4,6 @@ from abc import ABC, abstractmethod
 from scipy import stats
 import torch
 
-from .nn_loss import NLLPriorLoss, NLLNatsLoss, NLLBitsLoss
-
-
 class AbstractMetric(ABC):
     """Functor template for metric."""
 
@@ -265,60 +262,3 @@ class Dummy(AbstractMetric):
     def _get_metric(self, output, target):
         """Compute metric and return as 0d tensor."""
         return torch.tensor(0.0)
-
-
-class NLLPrior(AbstractMetric):
-    """A wrapper for the NLLPriorLoss as metric."""
-
-    @property
-    def name(self):
-        """Get the display name of this metric."""
-        return "Negative Log Likelihood"
-
-    @property
-    def short_name(self):
-        """Get the short name of this metric."""
-        return "NLL"
-
-    def _get_metric(self, output, target):
-        """Compute metric and return as 0d tensor."""
-        # since for the metric higher is better we negate the loss
-        return -(NLLPriorLoss()(output["output"], target))
-
-    def __call__(self, output, target):
-        """Call metric like output but wrap output so we keep dictionary."""
-        return super().__call__({"output": output}, target)
-
-
-class NLLNats(NLLPrior):
-    """A wrapper for the NLLNatsLoss as metric."""
-
-    @property
-    def name(self):
-        """Get the display name of this metric."""
-        return "Negative Log Probability (nats)"
-
-    @property
-    def short_name(self):
-        """Get the short name of this metric."""
-        return "Nats"
-
-    def _get_metric(self, output, target):
-        return -(NLLNatsLoss()(output["output"], target))
-
-
-class NLLBits(NLLPrior):
-    """A wrapper for the NLLBitsLoss as metric."""
-
-    @property
-    def name(self):
-        """Get the display name of this metric."""
-        return "Negative Log Probability (bits/dim)"
-
-    @property
-    def short_name(self):
-        """Get the short name of this metric."""
-        return "Bits"
-
-    def _get_metric(self, output, target):
-        return -(NLLBitsLoss()(output["output"], target))

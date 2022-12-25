@@ -18,4 +18,3 @@ from .dds import DownloadDataset
 from .voc import *
 from .glue import *
 from .toy import *
-from .tabular import *
