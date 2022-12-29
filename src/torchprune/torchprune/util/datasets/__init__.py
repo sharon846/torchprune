@@ -16,5 +16,6 @@ from .objectnet import ObjectNet
 from .cifar10 import *
 from .dds import DownloadDataset
 from .voc import *
+from .coco import *
 from .glue import *
 from .toy import *

@@ -59,13 +59,16 @@ def get_data_loader(param, net, c_constant):
     def get_dset(transform, train):
         # setup standard kwargs for all data sets
         name = dset_name if train else dset_name_test
+        dset_class = getattr(dsets, name)
+        # TODO: Make it better
+        if name == "COCOSegmentation":
+            return dset_class(train=train)
         kwargs_dset = {
             "root": root,
             "train": train,
         }
 
         # check if it's an instance of a DownloadDataset...
-        dset_class = getattr(dsets, name)
         if issubclass(
             dset_class,
             (
@@ -128,6 +131,7 @@ def get_data_loader(param, net, c_constant):
         dsets.ImageNet,
         dsets.VOCSegmentation2011,
         dsets.VOCSegmentation2012,
+        dsets.COCOSegmentation
     )
     if isinstance(set_test, no_thread_classes):
         num_threads = 0
@@ -142,24 +146,26 @@ def get_data_loader(param, net, c_constant):
     # get train/validation dataset
     # we have to do a manual split since true test data labels are not public
     set_train = get_dset(transform_train, train=True)
-    set_valid = get_dset(transform_test, train=True)
+    set_valid = get_dset(transform_test, train=dset_name != "COCOSegmentation")
 
     # get train/valid split
-    if hasattr(set_train, "get_valid_split"):
-        # use pre-defined split if it exists
-        idx_train, idx_valid = set_train.get_valid_split()
-    else:
-        # use a random split and record it
-        idx_train, idx_valid = _get_valid_split(
-            data_dir,
-            dset_name,
-            len(set_train),
-            valid_ratio,
-        )
+    if dset_name != "COCOSegmentation":
+        if hasattr(set_train, "get_valid_split"):
+            # use pre-defined split if it exists
+            idx_train, idx_valid = set_train.get_valid_split()
+        else:
+            # use a random split and record it
+            idx_train, idx_valid = _get_valid_split(
+                data_dir,
+                dset_name,
+                len(set_train),
+                valid_ratio,
+            )
 
     # now split the data
-    set_train = torch.utils.data.Subset(set_train, idx_train)
-    set_valid = torch.utils.data.Subset(set_valid, idx_valid)
+    if dset_name != "COCOSegmentation":
+        set_train = torch.utils.data.Subset(set_train, idx_train)
+        set_valid = torch.utils.data.Subset(set_valid, idx_valid)
 
     # Get the theoretical size of S.
     with torch.no_grad():

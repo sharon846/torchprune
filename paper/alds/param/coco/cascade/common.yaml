@@ -1,0 +1,25 @@
+retraining:
+  # 100% retraining
+  startEpoch: 0
+  numEpochs: 50
+  file: "training/coco/lraspp.yaml"
+
+experiments:
+  methods:
+    - "ALDSNet"
+  mode: "cascade"
+
+  numRepetitions: 1
+  numNets: 1
+
+  plotting:
+    minVal: 0.10
+    maxVal: 0.90
+
+  spacing:
+    - type: "geometric"
+      numIntervals: 6
+      maxVal: 0.90
+      minVal: 0.40
+
+  retrainIterations: -1
