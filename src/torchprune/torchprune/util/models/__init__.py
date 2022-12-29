@@ -5,6 +5,7 @@ from .fcnet import FCNet, lenet300_100, lenet500_300_100, fcnet_nettrim
 from .lenet5 import lenet5
 from .deepknight import deepknight
 from .deeplab import *
+from .lraspp import *
 from .cnn60k import cnn60k
 from .cnn5 import cnn5
 from .bert import bert
