@@ -31,7 +31,7 @@ class COCOSegmentation(torch.utils.data.Dataset):
 
         self.images = []
         self.masks = []
-        with open(data_file_coco, "r") as lines:
+        with open(data_file, "r") as lines:
             for line in lines:
                 rgb_img_loc = coco_root_dir + os.sep + line.split()[0]
                 label_img_loc = coco_root_dir + os.sep + line.split()[1]
