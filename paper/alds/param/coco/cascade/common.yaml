@@ -8,6 +8,7 @@ experiments:
   methods:
     - "ALDSNet"
   mode: "cascade"
+  datasetTest: "VOCSegmentation2012"
 
   numRepetitions: 1
   numNets: 1

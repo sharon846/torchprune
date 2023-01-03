@@ -15,10 +15,7 @@ class SingleOutNet(nn.Module):
 
     def forward(self, x):
         """Only return the "out" of all the outputs."""
-        if self.training or torch.is_grad_enabled():
-            return self.network.forward(x)
-        else:
-            return self.network.forward(x)["out"]
+        return self.network.forward(x)["out"]
 
 
 def lraspp_mobilenet_v3_large(num_classes):

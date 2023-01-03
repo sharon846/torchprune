@@ -56,12 +56,12 @@ def get_data_loader(param, net, c_constant):
     root = param["directories"]["local_data"]
     os.makedirs(root, exist_ok=True)
 
-    def get_dset(transform, train):
+    def get_dset(transform, train, is_coco=False):
         # setup standard kwargs for all data sets
         name = dset_name if train else dset_name_test
-        dset_class = getattr(dsets, name)
+        dset_class = getattr(dsets, "COCOSegmentation" if is_coco else name)
         # TODO: Make it better
-        if name == "COCOSegmentation":
+        if is_coco:
             return dset_class(train=train)
         kwargs_dset = {
             "root": root,
@@ -125,7 +125,6 @@ def get_data_loader(param, net, c_constant):
         dsets.MNIST,
         dsets.BaseGlue,
         dsets.BaseToyDataset,
-        dsets.BaseTabularDataset,
     )
     many_thread_classes = (
         dsets.ImageNet,
@@ -145,8 +144,8 @@ def get_data_loader(param, net, c_constant):
 
     # get train/validation dataset
     # we have to do a manual split since true test data labels are not public
-    set_train = get_dset(transform_train, train=True)
-    set_valid = get_dset(transform_test, train=dset_name != "COCOSegmentation")
+    set_train = get_dset(transform_train, train=True, is_coco=dset_name == "COCOSegmentation")
+    set_valid = get_dset(transform_test, train=dset_name != "COCOSegmentation", is_coco=dset_name == "COCOSegmentation")
 
     # get train/valid split
     if dset_name != "COCOSegmentation":
