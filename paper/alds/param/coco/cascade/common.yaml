@@ -2,7 +2,6 @@ retraining:
   # 100% retraining
   startEpoch: 0
   numEpochs: 50
-  file: "training/coco/lraspp.yaml"
 
 experiments:
   methods:
@@ -21,6 +20,6 @@ experiments:
     - type: "geometric"
       numIntervals: 6
       maxVal: 0.90
-      minVal: 0.40
+      minVal: 0.30
 
   retrainIterations: -1

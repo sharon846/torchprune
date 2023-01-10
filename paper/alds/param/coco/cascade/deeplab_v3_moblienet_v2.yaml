@@ -1,0 +1,10 @@
+network:
+  name: "deeplab_v3_mobilenet_v2"
+  dataset: "COCOSegmentation"
+  datasetTest: "VOCSegmentation2012"
+  outputSize: 21
+
+training:
+  file: "training/coco/deeplab.yaml"
+
+file: "paper/alds/param/coco/retraincascade/common.yaml"
