@@ -23,9 +23,9 @@ class SingleOutNet(nn.Module):
         else:
             return self.network.forward(x)["out"]
 
-class _DeepLabV3(nn.Module):
+class DeepLabV3(nn.Module):
     def __init__(self, backbone, classifier):
-        super(_DeepLabV3, self).__init__()
+        super(DeepLabV3, self).__init__()
         self.backbone = backbone
         self.classifier = classifier
         
@@ -141,9 +141,15 @@ def deeplabv3_resnet101(num_classes):
     )
 
 def deeplab_v3_mobilenet_v2(num_classes):
+    def set_bn_momentum(model, momentum=0.1):
+        for m in model.modules():
+            if isinstance(m, nn.BatchNorm2d):
+                m.momentum = momentum
+
     aspp_dilate = [6, 12, 18]
 
     backbone = mobilenetv2.mobilenet_v2(pretrained=True, output_stride=16)
+    set_bn_momentum(backbone, 0.01)
     
     # rename layers
     backbone.low_level_features = backbone.features[0:4]
@@ -158,5 +164,5 @@ def deeplab_v3_mobilenet_v2(num_classes):
     classifier = _DeepLabHead(inplanes, num_classes, aspp_dilate)
     backbone = IntermediateLayerGetter(backbone, return_layers=return_layers)
 
-    model = _DeepLabV3(backbone, classifier)
+    model = DeepLabV3(backbone, classifier)
     return model

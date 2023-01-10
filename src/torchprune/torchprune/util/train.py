@@ -453,9 +453,16 @@ def train_with_worker(
         net_parallel = net_handle
 
     # construct optimizer
-    optimizer = getattr(torch.optim, params["optimizer"])(
-        params=net_parallel.parameters(), **params["optimizerKwargs"]
-    )
+    # TODO: make it more general
+    if isinstance(net_parallel.torchnet, DeepLabV3):
+        optimizer = getattr(torch.optim, params["optimizer"](params=[
+            {'params': net_parallel.torchnet.backbone.parameters(), 'lr': 0.1 * params["optimizerKwargs"]["lr"]},
+            {'params': net_parallel.torchnet.classifier.parameters(), 'lr': params["optimizerKwargs"]["lr"]},
+        ], **params["optimizerKwargs"])
+    else:
+        optimizer = getattr(torch.optim, params["optimizer"])(
+            params=net_parallel.parameters(), **params["optimizerKwargs"]
+        )
 
     # get loss handle
     criterion = _get_loss_handle(params).to(worker_device)
