@@ -1,7 +1,7 @@
 """Module with Deeplab v3 segmentation networks."""
 
 import torch
-import mobilenetv2
+from .mobilenetv2 import mobilenet_v2
 import torch.nn as nn
 import torchvision.models.segmentation as seg_models
 from torchvision.models._utils import IntermediateLayerGetter
@@ -148,7 +148,7 @@ def deeplab_v3_mobilenet_v2(num_classes):
 
     aspp_dilate = [6, 12, 18]
 
-    backbone = mobilenetv2.mobilenet_v2(pretrained=True, output_stride=16)
+    backbone = mobilenet_v2(pretrained=True, output_stride=16)
     set_bn_momentum(backbone, 0.01)
     
     # rename layers

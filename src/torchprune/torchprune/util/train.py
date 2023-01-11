@@ -12,6 +12,7 @@ import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 
 from . import lr_scheduler, metrics, nn_loss, tensor, logging
+from .models import DeepLabV3
 
 __all__ = ["NetTrainer"]
 
@@ -455,7 +456,7 @@ def train_with_worker(
     # construct optimizer
     # TODO: make it more general
     if isinstance(net_parallel.torchnet, DeepLabV3):
-        optimizer = getattr(torch.optim, params["optimizer"](params=[
+        optimizer = getattr(torch.optim, params["optimizer"])(params=[
             {'params': net_parallel.torchnet.backbone.parameters(), 'lr': 0.1 * params["optimizerKwargs"]["lr"]},
             {'params': net_parallel.torchnet.classifier.parameters(), 'lr': params["optimizerKwargs"]["lr"]},
         ], **params["optimizerKwargs"])
