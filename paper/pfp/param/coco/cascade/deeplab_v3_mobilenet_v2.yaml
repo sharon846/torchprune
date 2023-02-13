@@ -7,4 +7,4 @@ network:
 training:
   file: "training/coco/deeplab.yaml"
 
-file: "paper/alds/param/coco/retraincascade/common.yaml"
+file: "paper/pfp/param/coco/cascade/common.yaml"
