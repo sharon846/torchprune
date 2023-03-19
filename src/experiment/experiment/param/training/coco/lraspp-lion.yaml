@@ -25,17 +25,16 @@ transformsFinal:
   - type: SegNormalize
     kwargs: { mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225] }
 
-optimizer: "SGD"
+optimizer: "Lion"
 optimizerKwargs:
   lr: 0.01
   weight_decay: 1.0e-6
-  momentum: 0.9
 
-numEpochs: 200
+numEpochs: 50
 
 lrSchedulers:
   - type: PolyLR
-    stepKwargs: { max_epoch: 200 }
+    stepKwargs: { max_epoch: 50 }
     kwargs: {}
 
 loss: CrossEntropyLoss

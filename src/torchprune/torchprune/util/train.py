@@ -11,6 +11,8 @@ import torch.multiprocessing as mp
 import torch.backends.cudnn as cudnn
 import torch.distributed as dist
 
+from lion_pytorch import Lion
+
 from . import lr_scheduler, metrics, nn_loss, tensor, logging
 from .models import DeepLabV3
 
@@ -460,6 +462,10 @@ def train_with_worker(
             {'params': net_parallel.module.torchnet.backbone.parameters(), 'lr': 0.1 * params["optimizerKwargs"]["lr"]},
             {'params': net_parallel.module.torchnet.classifier.parameters(), 'lr': params["optimizerKwargs"]["lr"]},
         ], **params["optimizerKwargs"])
+
+    elif params["optimizer"] == "Lion":
+        optimizer = Lion(net_parallel.parameters(), **params["optimizerKwargs"])
+
     else:
         optimizer = getattr(torch.optim, params["optimizer"])(
             params=net_parallel.parameters(), **params["optimizerKwargs"]
